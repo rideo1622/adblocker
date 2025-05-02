@@ -44,29 +44,108 @@ const analyticsSelectors = [
   'iframe[height="1"][width="1"]' // 1x1 pixel iframes
 ];
 
-// Function to neutralize analytics scripts (safer than removing them)
+// Enhanced analytics function neutralization with fallback for critical resources
 function neutralizeAnalyticsFunctions() {
     try {
-        // Neutralize common analytics global variables
-        Object.defineProperties(window, {
-            'ga': { value: () => {}, writable: false },
-            'gtag': { value: () => {}, writable: false },
-            '_gaq': { value: { push: () => {} }, writable: false },
-            'fbq': { value: () => {}, writable: false },
-            '_fbq': { value: () => {}, writable: false },
-            'analytics': { value: { track: () => {}, page: () => {} }, writable: false },
-            'hj': { value: () => {}, writable: false },
-            '_hsq': { value: { push: () => {} }, writable: false },
-            'dataLayer': { value: { push: () => {} }, writable: false },
-            'amplitude': { value: { getInstance: () => ({ logEvent: () => {} }) }, writable: false },
-            'mixpanel': { value: { track: () => {}, identify: () => {} }, writable: false },
-            'Piwik': { value: { getTracker: () => ({ trackPageView: () => {}, trackEvent: () => {} }) }, writable: false },
-            'Matomo': { value: { getTracker: () => ({ trackPageView: () => {}, trackEvent: () => {} }) }, writable: false },
-        });
-        // console.log('[AdBlocker Simplified] Analytics functions neutralized.');
+        // Check if we're on a page that might need analytics to function
+        const currentUrl = window.location.hostname;
+        const potentiallyCritical = isCriticalPage();
+        
+        // Define the analytics functions we'll handle
+        const analyticsFuncs = {
+            'ga': () => {},
+            'gtag': () => {},
+            '_gaq': { push: () => {} },
+            'fbq': () => {},
+            '_fbq': () => {},
+            'analytics': { track: () => {}, page: () => {} },
+            'hj': () => {},
+            '_hsq': { push: () => {} },
+            'dataLayer': { push: (data) => {
+                // For critical pages, let certain data layer operations pass through
+                if (potentiallyCritical && data && typeof data === 'object') {
+                    // Allow authentication, purchasing and user data operations
+                    if (data.event && (
+                        data.event.includes('auth') || 
+                        data.event.includes('login') || 
+                        data.event.includes('purchase') || 
+                        data.event.includes('checkout') ||
+                        data.event.includes('user') ||
+                        data.event.includes('account')
+                    )) {
+                        // Create a fallback function if possible
+                        if (window.originalDataLayer && Array.isArray(window.originalDataLayer)) {
+                            window.originalDataLayer.push(data);
+                        }
+                    }
+                }
+            } },
+            'amplitude': { getInstance: () => ({ logEvent: () => {} }) },
+            'mixpanel': { track: () => {}, identify: () => {} },
+            'Piwik': { getTracker: () => ({ trackPageView: () => {}, trackEvent: () => {} }) },
+            'Matomo': { getTracker: () => ({ trackPageView: () => {}, trackEvent: () => {} }) },
+        };
+
+        // Store original dataLayer if it exists
+        if (window.dataLayer && Array.isArray(window.dataLayer)) {
+            window.originalDataLayer = window.dataLayer;
+        }
+        
+        // Apply the neutralized functions
+        for (const [key, value] of Object.entries(analyticsFuncs)) {
+            // Only neutralize if not on a critical page, or use the smart version if it is
+            if (!potentiallyCritical) {
+                Object.defineProperty(window, key, { value, writable: false });
+            }
+        }
     } catch (error) {
         // console.warn('[AdBlocker Simplified] Error neutralizing analytics functions:', error);
     }
+}
+
+// Check if current page is likely a critical service (admin panel, etc.)
+function isCriticalPage() {
+    const url = window.location.href.toLowerCase();
+    const hostname = window.location.hostname.toLowerCase();
+    
+    // Check URL patterns that suggest critical functionality
+    const criticalPatterns = [
+        '/admin', 
+        '/panel', 
+        '/dashboard', 
+        '/account', 
+        '/login', 
+        '/auth', 
+        '/checkout',
+        '/payment',
+        '/billing'
+    ];
+    
+    // Check hostname patterns
+    const criticalDomains = [
+        'admin.',
+        'panel.',
+        'dashboard.',
+        'account.',
+        'mail.',
+        'webmail.'
+    ];
+    
+    // Check URL paths
+    for (const pattern of criticalPatterns) {
+        if (url.includes(pattern)) {
+            return true;
+        }
+    }
+    
+    // Check domains
+    for (const domain of criticalDomains) {
+        if (hostname.includes(domain)) {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 let adBlockingEnabled = true;
@@ -109,18 +188,35 @@ function blockAds() {
 function blockAnalytics() {
   // Only run if site is not whitelisted and analytics blocking is enabled
   if (isWhitelisted || !analyticsBlockingEnabled) return 0;
-
+  
   let count = 0;
   try {
-    // 1. Neutralize analytics functions (safest method)
+    // Check if we're on a critical page
+    const potentiallyCritical = isCriticalPage();
+    
+    // 1. Neutralize analytics functions (with safeguards for critical pages)
     neutralizeAnalyticsFunctions();
     count++; // Count neutralization as one operation
 
-    // 2. Only hide tracking pixels (img, iframe)
+    // 2. Only hide tracking pixels (img, iframe) - and only non-critical resources
     const elements = document.querySelectorAll(analyticsSelectors.join(', '));
     elements.forEach(element => {
        // Only hide elements likely to be tracking pixels
        if (element.tagName === 'IMG' || element.tagName === 'IFRAME' || element.tagName === 'PICTURE') {
+           // For critical pages, check if the element might be important
+           if (potentiallyCritical) {
+               const src = element.getAttribute('src') || '';
+               // Skip hiding if it appears to be related to user accounts or functionality
+               if (src.includes('auth') || 
+                   src.includes('login') || 
+                   src.includes('user') || 
+                   src.includes('account') ||
+                   src.includes('panel') || 
+                   src.includes('purchase')) {
+                   return; // Skip this element
+               }
+           }
+           
            if (element.style.display !== 'none') {
                element.style.setProperty('display', 'none', 'important');
                element.style.setProperty('visibility', 'hidden', 'important');

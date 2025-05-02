@@ -41,9 +41,18 @@
         <span data-i18n="enableAnalyticsBlocking">Block Analytics</span>
       </div>
 
+      <div class="toggle-container">
+        <label class="switch">
+          <input type="checkbox" id="smartBlockingToggle" checked>
+          <span class="slider round"></span>
+        </label>
+        <span data-i18n="enableSmartBlocking">Smart Blocking (Prevent Broken Sites)</span>
+      </div>
+
       <div class="whitelist-controls">
         <button id="addToWhitelist" class="btn" data-i18n="addToWhitelist">Add Current Site to Whitelist</button>
         <button id="removeFromWhitelist" class="btn" data-i18n="removeFromWhitelist">Remove Current Site from Whitelist</button>
+        <button id="fixBrokenSite" class="btn fix-button" data-i18n="fixBrokenSite">Fix Broken Site</button>
       </div>
     </div>
 

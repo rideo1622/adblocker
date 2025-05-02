@@ -289,6 +289,23 @@ input:checked + .slider:before {
   font-weight: bold;
 }
 
+.fix-button {
+  background: linear-gradient(135deg, #607d8b, #455a64);
+  color: white;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fix-button::before {
+  content: "🔧";
+  margin-right: 8px;
+}
+
+.fix-button:hover {
+  background: linear-gradient(135deg, #78909c, #546e7a);
+}
+
 /* Whitelist list styling */
 #whitelist {
   list-style-type: none;

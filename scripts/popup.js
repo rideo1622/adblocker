@@ -180,9 +180,31 @@ async function initializePopup() {
       });
     });
     
+    // Setup smart blocking toggle
+    const smartToggle = document.getElementById('smartBlockingToggle');
+    chrome.storage.local.get(['smartBlockingEnabled'], (result) => {
+      if (chrome.runtime.lastError) {
+        console.warn('Error getting smart blocking setting:', chrome.runtime.lastError.message);
+        return;
+      }
+      smartToggle.checked = result.smartBlockingEnabled !== false;
+    });
+    
+    smartToggle.addEventListener('change', (e) => {
+      chrome.runtime.sendMessage({
+        action: 'toggleSmartBlocking',
+        enabled: e.target.checked
+      }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.warn('Error toggling smart blocking:', chrome.runtime.lastError.message);
+        }
+      });
+    });
+    
     // Setup whitelist buttons
     const addToWhitelist = document.getElementById('addToWhitelist');
     const removeFromWhitelistBtn = document.getElementById('removeFromWhitelist');
+    const fixBrokenSiteBtn = document.getElementById('fixBrokenSite');
     
     addToWhitelist.addEventListener('click', async () => {
       const domain = await getCurrentDomain();
@@ -213,6 +235,44 @@ async function initializePopup() {
       if (!domain) return; // Skip if no valid domain
       
       removeFromWhitelist(domain);
+    });
+
+    // Fix broken site button functionality
+    fixBrokenSiteBtn.addEventListener('click', async () => {
+      const domain = await getCurrentDomain();
+      if (!domain) return; // Skip if no valid domain
+      
+      // First add to whitelist
+      chrome.runtime.sendMessage({
+        action: 'addToWhitelist',
+        domain
+      }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.warn('Error adding to whitelist:', chrome.runtime.lastError.message);
+          return;
+        }
+        
+        // Then reload the current tab to apply changes immediately
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+          if (chrome.runtime.lastError) {
+            console.warn('Error getting current tab:', chrome.runtime.lastError.message);
+            return;
+          }
+          
+          if (tabs && tabs.length > 0) {
+            chrome.tabs.reload(tabs[0].id);
+          }
+          
+          // Update UI
+          chrome.runtime.sendMessage({ action: 'getStats' }, (stats) => {
+            if (chrome.runtime.lastError) {
+              console.warn('Error getting updated stats:', chrome.runtime.lastError.message);
+              return;
+            }
+            updateStats(stats);
+          });
+        });
+      });
     });
   } catch (error) {
     console.error('Error initializing popup:', error);
