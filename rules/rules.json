@@ -61,7 +61,7 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "facebook.com/tr",
+      "urlFilter": "facebook.com",
       "resourceTypes": ["script", "image", "xmlhttprequest"]
     }
   },

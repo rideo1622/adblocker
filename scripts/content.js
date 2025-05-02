@@ -36,7 +36,7 @@ const adSelectors = [
 const analyticsSelectors = [
   // Primarily for tracking pixels (images, iframes)
   'img[src*="google-analytics.com/collect"]',
-  'img[src*="facebook.com/tr"]',
+  'img[src*="facebook.com"]',
   'img[src*="pixel"]', // Generic pixel images (be cautious)
   'img[width="1"][height="1"]', // 1x1 pixel images (typically trackers)
   'iframe[src*="googletagmanager.com/ns.html"]', // GTM iframe
