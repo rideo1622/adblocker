@@ -14,7 +14,7 @@ let filterLists = {
   socialMedia: true
 };
 
-// Site işlevselliğini bozmamak için önemli servislerin listesi
+// List of important services to avoid breaking site functionality
 const criticalServiceKeywords = [
   'mail.google.com',
   'gmail.com',
@@ -85,13 +85,13 @@ chrome.storage.local.get(['adBlockingEnabled', 'analyticsBlockingEnabled', 'bloc
   updateRules();
 });
 
-// URL kritik bir servise mi ait kontrol et
+// Check if URL belongs to a critical service
 function isCriticalService(url) {
   if (!url) return false;
   
   const urlLower = url.toLowerCase();
   
-  // Kritik anahtar kelimeleri kontrol et
+  // Check for critical keywords
   for (const keyword of criticalServiceKeywords) {
     if (urlLower.includes(keyword.toLowerCase())) {
       return true;
@@ -124,7 +124,7 @@ updateRules();
 function notifyContentScripts(message) {
   chrome.tabs.query({}, (tabs) => {
     if (chrome.runtime.lastError) {
-      console.warn('Tab sorgulama hatası:', chrome.runtime.lastError.message);
+      console.warn('Error querying tabs:', chrome.runtime.lastError.message);
       return;
     }
     
@@ -133,7 +133,7 @@ function notifyContentScripts(message) {
       if (tab.url && tab.url.startsWith('http')) {
         chrome.tabs.sendMessage(tab.id, message).catch((error) => {
           // Silently fail if the message can't be sent (content script might not be loaded yet)
-          console.debug(`${tab.id} numaralı sekmeye mesaj gönderilemedi: ${error ? error.message : 'Bilinmeyen hata'}`);
+          console.debug(`Could not send message to tab ${tab.id}: ${error ? error.message : 'Unknown error'}`);
         });
       }
     });
@@ -158,6 +158,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     return false; // Synchronous response
   } 
+  
+  // Get initial state for content scripts
+  else if (request.action === "getInitialState") {
+    const domain = request.domain || (sender && sender.tab && new URL(sender.tab.url).hostname);
+    
+    // Send current state to content script
+    sendResponse({
+      adBlockingEnabled: adBlockingEnabled,
+      analyticsBlockingEnabled: analyticsBlockingEnabled,
+      isWhitelisted: domain ? whitelistedDomains.has(domain) : false
+    });
+    return false; // Synchronous response
+  }
   
   // Toggle ad blocking on/off
   else if (request.action === "toggleAdBlocking") {
@@ -203,12 +216,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         whitelistedDomains: Array.from(whitelistedDomains) 
       });
       
-      // Bildir
+      // Notify content scripts
       notifyWhitelistChanged();
       
       sendResponse({ success: true });
     } else {
-      sendResponse({ success: false, error: 'Geçersiz domain' });
+      sendResponse({ success: false, error: 'Invalid domain' });
     }
     return false; // Synchronous response
   } 
@@ -222,12 +235,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         whitelistedDomains: Array.from(whitelistedDomains) 
       });
       
-      // Bildir
+      // Notify content scripts
       notifyWhitelistChanged();
       
       sendResponse({ success: true });
     } else {
-      sendResponse({ success: false, error: 'Geçersiz domain' });
+      sendResponse({ success: false, error: 'Invalid domain' });
     }
     return false; // Synchronous response
   }
@@ -244,7 +257,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else {
       sendResponse({ 
         isWhitelisted: false,
-        error: 'Geçersiz domain'
+        error: 'Invalid domain'
       });
     }
     return false; // Synchronous response
@@ -259,35 +272,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return false; // Synchronous response
   }
   
-  // Count ads blocked from content script
+  // Count blocked ads
   else if (request.action === "countBlockedAds") {
-    // İstatistik güncelleme
-    try {
-      const count = Number(request.count) || 0;
-      if (count > 0) {
-        blockedAds += count;
-        chrome.storage.local.set({ blockedAds });
-      }
-    } catch (e) {
-      console.debug('Reklam sayısı güncellenirken hata:', e);
+    if (request.count && Number.isInteger(request.count)) {
+      blockedAds += request.count;
+      chrome.storage.local.set({ blockedAds });
     }
+    sendResponse({ success: true });
     return false; // Synchronous response
   }
   
-  // Count analytics blocked from content script
+  // Count blocked analytics
   else if (request.action === "countBlockedAnalytics") {
-    // İstatistik güncelleme
-    try {
-      const count = Number(request.count) || 0;
-      if (count > 0) {
-        blockedAnalytics += count;
-        chrome.storage.local.set({ blockedAnalytics });
-      }
-    } catch (e) {
-      console.debug('Analitik sayısı güncellenirken hata:', e);
+    if (request.count && Number.isInteger(request.count)) {
+      blockedAnalytics += request.count;
+      chrome.storage.local.set({ blockedAnalytics });
     }
+    sendResponse({ success: true });
     return false; // Synchronous response
   }
   
+  // Default response for unhandled messages
   return false;
 }); 

@@ -1,10 +1,10 @@
-// CSS selectors for ad-containing elements (Daha dikkatli seçilmiş olabilir)
-// Not: Bu liste, işlevselliği bozma riski en düşük, yaygın ve belirgin reklam kalıplarını hedeflemelidir.
+// CSS selectors for ad-containing elements (carefully selected)
+// Note: This list targets common and obvious ad patterns with minimal risk of breaking site functionality
 const adSelectors = [
   '.adsbygoogle', // Google Adsense
   'div[id^="google_ads_"]', // Google Ads
   'div[id*="gpt-ad"]', // Google Publisher Tags
-  'div[data-google-query-id]', // Google Arama reklamları
+  'div[data-google-query-id]', // Google Search ads
   'div[data-ad-unit-path]', // Google Ads
   'div[data-ad-format]',
   'div[data-ad-client]',
@@ -13,41 +13,41 @@ const adSelectors = [
   'a[href*="/adclick."]', // Ad click redirects
   'a[href*="googleadservices.com/pagead/aclk"]', // Google Ad redirects
   'a[href*="doubleclick.net/ddm/clk"]', // DoubleClick redirects
-  'div[aria-label*="Ad"]', // Erişilebilirlik etiketi "Ad"
-  'div[aria-label*="Sponsored"]', // Erişilebilirlik etiketi "Sponsored"
+  'div[aria-label*="Ad"]', // Accessibility label "Ad"
+  'div[aria-label*="Sponsored"]', // Accessibility label "Sponsored"
   '.ad-banner',
   '.advertisement',
   '.banner-ad',
   '.google-ad',
   '.sponsored-link',
-  'div[class*=" ad-"]', // class içinde " ad-" içerenler (daha spesifik)
-  'div[id*="-ad-"]', // id içinde "-ad-" içerenler
-  'iframe[src*="googleads.g.doubleclick.net"]', // Reklam iframe'leri
-  'iframe[src*="googlesyndication.com"]', // Reklam iframe'leri
-  'iframe[src*="adnxs.com"]', // Reklam iframe'leri
-  'iframe[name^="google_ads_"]', // Reklam iframe isimleri
-  '#tads > .ads-ad', // Eski Google arama reklamları
-  '#bottomads > .ads-ad' // Eski Google arama reklamları
+  'div[class*=" ad-"]', // Classes containing " ad-" (more specific)
+  'div[id*="-ad-"]', // IDs containing "-ad-"
+  'iframe[src*="googleads.g.doubleclick.net"]', // Ad iframes
+  'iframe[src*="googlesyndication.com"]', // Ad iframes
+  'iframe[src*="adnxs.com"]', // Ad iframes
+  'iframe[name^="google_ads_"]', // Ad iframe names
+  '#tads > .ads-ad', // Legacy Google search ads
+  '#bottomads > .ads-ad' // Legacy Google search ads
 ];
 
 // CSS selectors for analytics tools and trackers
-// Not: Scriptleri gizlemek yerine neutralizeAnalyticsFunctions kullanmak genellikle daha iyidir.
-// Pikselleri gizlemek ise genellikle güvenlidir.
+// Note: Using neutralizeAnalyticsFunctions is generally safer than hiding scripts.
+// Hiding pixels is usually safe for site functionality.
 const analyticsSelectors = [
   // Primarily for tracking pixels (images, iframes)
   'img[src*="google-analytics.com/collect"]',
   'img[src*="facebook.com/tr"]',
-  'img[src*="pixel"]', // Genel pixel img'leri (dikkatli olunmalı)
-  'img[width="1"][height="1"]', // Boyutları 1x1 olan resimler (genellikle izleyici)
+  'img[src*="pixel"]', // Generic pixel images (be cautious)
+  'img[width="1"][height="1"]', // 1x1 pixel images (typically trackers)
   'iframe[src*="googletagmanager.com/ns.html"]', // GTM iframe
   'iframe[src*="matomo.php"]', // Matomo iframe
-  'iframe[height="1"][width="1"]' // Boyutları 1x1 olan iframe'ler
+  'iframe[height="1"][width="1"]' // 1x1 pixel iframes
 ];
 
-// Scriptleri etkisizleştiren fonksiyon (bu yöntem genellikle daha güvenli)
+// Function to neutralize analytics scripts (safer than removing them)
 function neutralizeAnalyticsFunctions() {
     try {
-        // Daha önce tanımlandığı gibi, yaygın global değişkenleri etkisiz hale getir
+        // Neutralize common analytics global variables
         Object.defineProperties(window, {
             'ga': { value: () => {}, writable: false },
             'gtag': { value: () => {}, writable: false },
@@ -73,25 +73,23 @@ let adBlockingEnabled = true;
 let analyticsBlockingEnabled = true;
 let isWhitelisted = false;
 
-// --- isCriticalPageContext, safeToModify, hasCriticalAncestorOrSelf KALDIRILDI ---
-
-// Block ads (Simplified)
+// Block ads (Simplified approach)
 function blockAds() {
-  // Sadece beyaz listede değilse çalıştır
+  // Only run if site is not whitelisted
   if (isWhitelisted || !adBlockingEnabled) return 0;
 
   let count = 0;
   try {
     const elements = document.querySelectorAll(adSelectors.join(', '));
     elements.forEach(element => {
-      // Basitçe gizle
+      // Simply hide the element
       if (element.style.display !== 'none') {
         element.style.setProperty('display', 'none', 'important');
-        element.style.setProperty('visibility', 'hidden', 'important'); // Ekstra güvenlik
-         // Boyutları sıfırlamak bazen layout'u bozabilir, sadece display none yeterli olabilir.
-         // element.style.setProperty('width', '0', 'important');
-         // element.style.setProperty('height', '0', 'important');
-         element.style.setProperty('pointer-events', 'none', 'important');
+        element.style.setProperty('visibility', 'hidden', 'important'); // Extra safety
+        // Setting dimensions to zero can sometimes break layouts, display:none is often sufficient
+        // element.style.setProperty('width', '0', 'important');
+        // element.style.setProperty('height', '0', 'important');
+        element.style.setProperty('pointer-events', 'none', 'important');
         count++;
       }
     });
@@ -107,33 +105,33 @@ function blockAds() {
   return count;
 }
 
-// Block analytics (Simplified)
+// Block analytics (Simplified approach)
 function blockAnalytics() {
-  // Beyaz listede değilse ve analiz engelleme açıksa çalıştır
+  // Only run if site is not whitelisted and analytics blocking is enabled
   if (isWhitelisted || !analyticsBlockingEnabled) return 0;
 
   let count = 0;
   try {
-    // 1. Fonksiyonları etkisizleştir (En güvenli yöntem)
+    // 1. Neutralize analytics functions (safest method)
     neutralizeAnalyticsFunctions();
-    count++; // Etkisizleştirmeyi bir işlem sayalım
+    count++; // Count neutralization as one operation
 
-    // 2. Sadece izleme piksellerini (img, iframe) gizle
+    // 2. Only hide tracking pixels (img, iframe)
     const elements = document.querySelectorAll(analyticsSelectors.join(', '));
     elements.forEach(element => {
-       // Sadece img ve iframe gibi piksel olabilecekleri gizle
+       // Only hide elements likely to be tracking pixels
        if (element.tagName === 'IMG' || element.tagName === 'IFRAME' || element.tagName === 'PICTURE') {
            if (element.style.display !== 'none') {
                element.style.setProperty('display', 'none', 'important');
                element.style.setProperty('visibility', 'hidden', 'important');
-               element.style.setProperty('width', '0', 'important'); // Pikseller için genellikle güvenli
+               element.style.setProperty('width', '0', 'important'); // Usually safe for pixels
                element.style.setProperty('height', '0', 'important');
                element.style.setProperty('position', 'absolute', 'important');
                element.style.setProperty('pointer-events', 'none', 'important');
                count++;
            }
        }
-       // Not: Analiz scriptlerini DOM'dan gizlemek yerine 'neutralize' etmek daha iyi.
+       // Note: It's better to neutralize analytics scripts than hide them in the DOM
     });
 
     if (count > 0) {
@@ -147,16 +145,16 @@ function blockAnalytics() {
   return count;
 }
 
-// Performance-friendly DOM observer (Basitleştirilmiş)
+// Performance-friendly DOM observer (Simplified)
 function observeDOMChanges() {
   try {
     let adCheckTimeout = null;
     let analyticsCheckTimeout = null;
-    const CHECK_DELAY = 350; // Biraz daha uzun bir gecikme
+    const CHECK_DELAY = 350; // Slightly longer delay for better performance
 
     const observer = new MutationObserver((mutations) => {
-      // Çok basit bir kontrol: Eğer node eklenmişse, gecikmeli tarama yap.
-      // Daha optimize edilebilir ama basitlik öncelikli.
+      // Simple check: If nodes were added, schedule a delayed scan
+      // This could be further optimized, but simplicity is prioritized
       let nodeAdded = false;
       for (const mutation of mutations) {
         if (mutation.addedNodes.length > 0) {
@@ -172,24 +170,23 @@ function observeDOMChanges() {
           }
           if (analyticsBlockingEnabled && !isWhitelisted) {
              clearTimeout(analyticsCheckTimeout);
-             // Analiz fonksiyonlarını etkisizleştirme genellikle ilk yüklemede yeterlidir,
-             // ama dinamik yüklenenler için tekrar çağrılabilir. Pikseller için de geçerli.
+             // Analytics function neutralization is usually sufficient on initial load,
+             // but can be called again for dynamically loaded content. Also applies to pixels.
              analyticsCheckTimeout = setTimeout(blockAnalytics, CHECK_DELAY);
           }
       }
-
     });
 
-    // Gözlemciyi başlat
-     const observeTarget = document.documentElement || document.body;
-     if (observeTarget) {
-         observer.observe(observeTarget, {
-             childList: true,
-             subtree: true
-         });
-     }
+    // Start the observer
+    const observeTarget = document.documentElement || document.body;
+    if (observeTarget) {
+        observer.observe(observeTarget, {
+            childList: true,
+            subtree: true
+        });
+    }
 
-    // İlk taramayı DOM yüklendikten sonra yap
+    // Run initial scan after DOM is loaded
     const runInitialScan = () => {
         if (adBlockingEnabled) blockAds();
         if (analyticsBlockingEnabled) blockAnalytics();
@@ -215,15 +212,15 @@ function initializeBlocking() {
                 analyticsBlockingEnabled = response.analyticsBlockingEnabled;
                 isWhitelisted = response.isWhitelisted;
                 // console.log(`[AdBlocker Simplified] Initial State: Ads=${adBlockingEnabled}, Analytics=${analyticsBlockingEnabled}, Whitelisted=${isWhitelisted}`);
-                observeDOMChanges(); // Gözlemciyi sadece ilk durum alındıktan sonra başlat
+                observeDOMChanges(); // Only start observer after getting initial state
             } else {
                 // console.warn('[AdBlocker Simplified] Did not receive initial state. Using defaults.');
-                observeDOMChanges(); // Varsayılanlarla gözlemciyi başlat
+                observeDOMChanges(); // Start observer with defaults
             }
         })
         .catch(error => {
             // console.error('[AdBlocker Simplified] Error getting initial state:', error);
-            observeDOMChanges(); // Hata durumunda bile gözlemciyi başlatmayı dene
+            observeDOMChanges(); // Try to start observer even in error case
         });
 }
 
@@ -233,38 +230,38 @@ initializeBlocking();
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'updateState') {
         let stateChanged = false;
-        let runScan = false; // Sadece durum değiştiğinde değil, engelleme açıldığında da tarama yapmalı
+        let runScan = false; // Run scan not only when state changes but also when blocking is enabled
 
         if (request.adBlockingEnabled !== undefined && adBlockingEnabled !== request.adBlockingEnabled) {
             adBlockingEnabled = request.adBlockingEnabled;
             stateChanged = true;
-            if(adBlockingEnabled) runScan = true; // Engelleme açıldıysa tarama yap
+            if(adBlockingEnabled) runScan = true; // Run scan if blocking was enabled
         }
         if (request.analyticsBlockingEnabled !== undefined && analyticsBlockingEnabled !== request.analyticsBlockingEnabled) {
             analyticsBlockingEnabled = request.analyticsBlockingEnabled;
             stateChanged = true;
-             if(analyticsBlockingEnabled) runScan = true; // Engelleme açıldıysa tarama yap
+            if(analyticsBlockingEnabled) runScan = true; // Run scan if blocking was enabled
         }
         if (request.isWhitelisted !== undefined && isWhitelisted !== request.isWhitelisted) {
             isWhitelisted = request.isWhitelisted;
             stateChanged = true;
-            if(!isWhitelisted) runScan = true; // Beyaz listeden çıkarıldıysa tarama yap
+            if(!isWhitelisted) runScan = true; // Run scan if site was removed from whitelist
         }
 
         if (stateChanged) {
             // console.log(`[AdBlocker Simplified] State Updated: Ads=${adBlockingEnabled}, Analytics=${analyticsBlockingEnabled}, Whitelisted=${isWhitelisted}`);
-            // Beyaz listede değilse ve ilgili engelleme açıksa ve tarama gerekiyorsa
-             if (runScan && !isWhitelisted) {
-                 if(adBlockingEnabled) setTimeout(blockAds, 50); // Küçük bir gecikmeyle taramayı tetikle
-                 if(analyticsBlockingEnabled) setTimeout(blockAnalytics, 50);
-             }
-             // Eğer beyaz listeye eklendiyse veya engelleme kapatıldıysa, gizlenenleri geri GÖSTERMEK gerekir.
-             // Bu daha karmaşık bir mantık gerektirir (örneğin, gizlenen elementleri takip etmek).
-             // Şimdilik bu kısım eklenmedi, sayfa yenilemesi gerekir.
+            // If not whitelisted and relevant blocking is enabled and scan is needed
+            if (runScan && !isWhitelisted) {
+                if(adBlockingEnabled) setTimeout(blockAds, 50); // Trigger scan with short delay
+                if(analyticsBlockingEnabled) setTimeout(blockAnalytics, 50);
+            }
+            // If site was whitelisted or blocking was disabled, hidden elements should be shown again.
+            // This requires more complex logic (e.g., tracking hidden elements).
+            // For now, this part is not implemented, page refresh is required.
         }
         sendResponse({ success: true });
         return true; // Indicate async response
     }
-    // Diğer mesaj türleri için false dönebilir veya işlem yapabilir.
+    // May handle other message types or return false
     return false;
 });
