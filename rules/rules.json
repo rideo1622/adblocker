@@ -6,7 +6,7 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "googlesyndication.com",
+      "urlFilter": "googleads",
       "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
     }
   },
@@ -17,7 +17,7 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "doubleclick.net",
+      "urlFilter": "doubleclick",
       "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
     }
   },
@@ -28,7 +28,7 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "googleadservices.com",
+      "urlFilter": "googlesyndication",
       "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
     }
   },
@@ -39,8 +39,8 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "adservice",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
+      "urlFilter": "google-analytics",
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
     }
   },
   {
@@ -50,89 +50,12 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "pagead",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
+      "urlFilter": "googletagmanager",
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
     }
   },
   {
     "id": 6,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "urlFilter": "ads.google.com",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
-    }
-  },
-  {
-    "id": 7,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "urlFilter": "adnxs.com",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
-    }
-  },
-  {
-    "id": 8,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "urlFilter": "adform.net",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
-    }
-  },
-  {
-    "id": 9,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "urlFilter": "adtng",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
-    }
-  },
-  {
-    "id": 10,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "urlFilter": "amazon-adsystem.com",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
-    }
-  },
-  {
-    "id": 11,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "urlFilter": "google-analytics.com",
-      "resourceTypes": ["script", "image", "xmlhttprequest"]
-    }
-  },
-  {
-    "id": 12,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "urlFilter": "analytics",
-      "resourceTypes": ["script", "image", "xmlhttprequest"]
-    }
-  },
-  {
-    "id": 13,
     "priority": 1,
     "action": {
       "type": "block"
@@ -143,14 +66,91 @@
     }
   },
   {
+    "id": 7,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "amazon-adsystem",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
+    }
+  },
+  {
+    "id": 8,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "criteo",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
+    }
+  },
+  {
+    "id": 9,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "adnxs",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
+    }
+  },
+  {
+    "id": 10,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "hotjar",
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 11,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "googleadservices.com",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
+    }
+  },
+  {
+    "id": 12,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "adservice",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
+    }
+  },
+  {
+    "id": 13,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "pagead",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
+    }
+  },
+  {
     "id": 14,
     "priority": 1,
     "action": {
       "type": "block"
     },
     "condition": {
-      "urlFilter": "fbcdn.net/signals",
-      "resourceTypes": ["script", "image", "xmlhttprequest"]
+      "urlFilter": "ads.google.com",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
     }
   },
   {
@@ -160,8 +160,8 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "connect.facebook.net",
-      "resourceTypes": ["script", "image", "xmlhttprequest"]
+      "urlFilter": "adnxs.com",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
     }
   },
   {
@@ -171,8 +171,8 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "googletagmanager.com",
-      "resourceTypes": ["script", "image", "xmlhttprequest"]
+      "urlFilter": "adform.net",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
     }
   },
   {
@@ -182,8 +182,8 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "hotjar.com",
-      "resourceTypes": ["script", "image", "xmlhttprequest"]
+      "urlFilter": "adtng",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
     }
   },
   {
@@ -193,8 +193,8 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "pixel.wp.com",
-      "resourceTypes": ["script", "image", "xmlhttprequest"]
+      "urlFilter": "amazon-adsystem.com",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "sub_frame"]
     }
   },
   {
@@ -204,7 +204,7 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "matomo",
+      "urlFilter": "google-analytics.com",
       "resourceTypes": ["script", "image", "xmlhttprequest"]
     }
   },
@@ -215,8 +215,118 @@
       "type": "block"
     },
     "condition": {
+      "urlFilter": "analytics",
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 21,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "fbcdn.net/signals",
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 22,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "connect.facebook.net",
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 23,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "hotjar.com",
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 24,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "pixel.wp.com",
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 25,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "matomo",
+      "resourceTypes": ["script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 26,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
       "urlFilter": "piwik",
       "resourceTypes": ["script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 27,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "adclick.g.doubleclick.net",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 28,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "googleadservices.com/pagead/aclk",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 29,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "www.google.com/aclk",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest"]
+    }
+  },
+  {
+    "id": 30,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "www.google.com/pagead",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image", "xmlhttprequest"]
     }
   }
 ] 

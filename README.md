@@ -56,7 +56,7 @@ The options page provides additional settings:
 
 This project is available as open source under the terms of the MIT License.
 
-Support: mail@ridvanatmaca.com
+For support: mail@ridvanatmaca.com
 
 ---
 
@@ -110,4 +110,4 @@ Ayarlar sayfası ek ayarlar sunar:
 
 Bu proje MIT Lisansı şartları altında açık kaynak olarak mevcuttur. 
 
-Destek: mail@ridvanatmaca.com
+Destek için: mail@ridvanatmaca.com
