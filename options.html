@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Ad Blocker Options</title>
+  <link rel="stylesheet" href="styles/options.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="icons/ad-blocker.png" alt="Ad Blocker Icon" class="icon">
+      <h1 data-i18n="optionsTitle">Ad Blocker Options</h1>
+    </header>
+
+    <main>
+      <section class="settings-section">
+        <h2 data-i18n="generalSettings">General Settings</h2>
+        <div class="setting-item">
+          <label class="switch">
+            <input type="checkbox" id="adBlockingToggle" checked>
+            <span class="slider round"></span>
+          </label>
+          <span data-i18n="enableAdBlocking">Enable Ad Blocking</span>
+        </div>
+        <div class="setting-item">
+          <label class="switch">
+            <input type="checkbox" id="analyticsBlockingToggle" checked>
+            <span class="slider round"></span>
+          </label>
+          <span data-i18n="enableAnalyticsBlocking">Block Analytics</span>
+        </div>
+      </section>
+
+      <section class="stats-section">
+        <h2 data-i18n="detailedStats">Detailed Statistics</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3 data-i18n="totalBlocked">Total Blocked Ads</h3>
+            <div class="stat-value" id="totalBlocked">0</div>
+          </div>
+          <div class="stat-card">
+            <h3 data-i18n="totalBlockedAnalytics">Total Blocked Analytics</h3>
+            <div class="stat-value" id="totalBlockedAnalytics">0</div>
+          </div>
+          <div class="stat-card">
+            <h3 data-i18n="whitelistedSites">Whitelisted Sites</h3>
+            <div class="stat-value" id="whitelistedCount">0</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="whitelist-section">
+        <h2 data-i18n="whitelist">Whitelist Management</h2>
+        <div class="whitelist-controls">
+          <input type="text" id="whitelistInput" placeholder="Enter domain to whitelist">
+          <button id="addDomain" class="btn" data-i18n="add">Add</button>
+        </div>
+        <div class="whitelist-container">
+          <ul id="whitelist"></ul>
+        </div>
+      </section>
+
+      <section class="filter-lists-section">
+        <h2 data-i18n="filterLists">Filter Lists</h2>
+        <div class="filter-list-container">
+          <div class="filter-group">
+            <h3 data-i18n="adFilters">Ad Filters</h3>
+            <div class="filter-list">
+              <label>
+                <input type="checkbox" class="filter-checkbox" name="easyList" checked>
+                <span data-i18n="easyList">EasyList</span>
+              </label>
+              <label>
+                <input type="checkbox" class="filter-checkbox" name="adGuard" checked>
+                <span data-i18n="adGuard">AdGuard Base</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <h3 data-i18n="privacyFilters">Privacy Filters</h3>
+            <div class="filter-list">
+              <label>
+                <input type="checkbox" class="filter-checkbox" name="easyPrivacy" checked>
+                <span data-i18n="easyPrivacy">EasyPrivacy</span>
+              </label>
+              <label>
+                <input type="checkbox" class="filter-checkbox" name="googleAnalytics" checked>
+                <span data-i18n="googleAnalytics">Google Analytics</span>
+              </label>
+              <label>
+                <input type="checkbox" class="filter-checkbox" name="facebookPixel" checked>
+                <span data-i18n="facebookPixel">Facebook Pixel</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <h3 data-i18n="otherFilters">Other Filters</h3>
+            <div class="filter-list">
+              <label>
+                <input type="checkbox" class="filter-checkbox" name="malwareDomains" checked>
+                <span data-i18n="malwareDomains">Malware Domains</span>
+              </label>
+              <label>
+                <input type="checkbox" class="filter-checkbox" name="socialMedia" checked>
+                <span data-i18n="socialMedia">Social Media Filters</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p data-i18n="version">Version 1.0</p>
+    </footer>
+  </div>
+  <script src="scripts/localization.js"></script>
+  <script src="scripts/options.js"></script>
+</body>
+</html> 
